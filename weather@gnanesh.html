@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        h2 {
+            color: #007bff;
+        }
+        .weather-info {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Weather App</h2>
+        <input type="text" id="cityInput" class="form-control" placeholder="Enter city name">
+        <button class="btn btn-primary mt-2" id="getWeather">Get Weather</button>
+        <div class="weather-info mt-3" id="weatherInfo"></div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#getWeather').click(function() {
+                let city = $('#cityInput').val().trim();
+                if (city !== '') {
+                    fetchWeather(city);
+                }
+            });
+        });
+
+        function fetchWeather(city) {
+            let apiKey = 'a6e15ae8ac840a8f38771be6e64e84eb'; // Replace with your OpenWeatherMap API Key
+            let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+            
+            $.getJSON(url, function(data) {
+                let weatherHtml = `
+                    <h4>${data.name}, ${data.sys.country}</h4>
+                    <p>Temperature: ${data.main.temp}°C</p>
+                    <p>Humidity: ${data.main.humidity}%</p>
+                    <p>Wind Speed: ${data.wind.speed} m/s</p>
+                    <p>Condition: ${data.weather[0].description}</p>
+                `;
+                $('#weatherInfo').html(weatherHtml);
+            }).fail(function() {
+                $('#weatherInfo').html('<p class="text-danger">City not found. Try again!</p>');
+            });
+        }
+    </script>
+</body>
+</html>
